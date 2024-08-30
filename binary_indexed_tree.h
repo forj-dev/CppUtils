@@ -19,9 +19,11 @@ private:
 	}
 
 public:
-	binary_indexed_tree(const size_t len){
+	binary_indexed_tree(size_t len){
 		tree=std::vector<T>(len+1);
 	}
+	
+	binary_indexed_tree()=default;
 	
 	void update(size_t index,const T& offset){
 		++index;
@@ -41,11 +43,72 @@ public:
 		return result;
 	}
 	
+	/*[l,r]*/
 	inline T sum(const size_t l,const size_t r){
-		return sum(r-1)-sum(l-1);
+		return sum(r)-sum(l-1);
+	}
+	
+	binary_indexed_tree& operator=(const binary_indexed_tree& other){
+		if(this!=&other){
+			tree=other.tree;
+		}
+		return *this;
 	}
 };
 
+
+#define SBIT section_binary_indexed_tree
+
+
+template<typename T>
+class section_binary_indexed_tree{
+private:
+	size_t len;
+	binary_indexed_tree<T> base_tree;
+	binary_indexed_tree<T> base_tree_id_mul;
+public:
+	section_binary_indexed_tree(size_t _len){
+		len=_len;
+		base_tree=binary_indexed_tree<T>(len);
+		base_tree_id_mul=binary_indexed_tree<T>(len);
+	}
+	
+	/*[l,r]*/
+	void update(size_t left,size_t right,const T& offset){
+		base_tree.update(left,offset);
+		base_tree_id_mul.update(left,offset*(left+1));
+		if(right+1<len){
+			base_tree.update(right+1,-offset);
+			base_tree_id_mul.update(right+1,-offset*(right+2));
+		}
+	}
+	
+	inline void update(size_t index,const T& offset){
+		update(index,index,offset);
+	}
+	
+	inline T sum(size_t index){
+		return (index+2)*base_tree.sum(index)-base_tree_id_mul.sum(index);
+	}
+	
+	/*[l,r]*/
+	inline T sum(size_t l,size_t r){
+		return sum(r)-sum(l-1);
+	}
+	
+	inline T get(size_t index){
+		return sum(index,index);
+	}
+	
+	section_binary_indexed_tree& operator=(const section_binary_indexed_tree& other){
+		if(this!=&other){
+			len=other.len;
+			base_tree=other.base_tree;
+			base_tree_id_mul=other.base_tree_id_mul;
+		}
+		return *this;
+	}
+};
 
 #endif
 
