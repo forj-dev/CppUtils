@@ -28,6 +28,10 @@ public:
 		fa[f_a]=f_b;
 		return true;
 	}
+	
+	inline bool query(size_t a,size_t b){
+		return getFather(a)==getFather(b);
+	}
 };
 
 #endif
