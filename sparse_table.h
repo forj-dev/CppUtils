@@ -48,6 +48,10 @@ public:
 		size_t k=log_id[r-l+1];
 		return op(st[id(l,k)],st[id(r-(1<<k)+1,k)]);
 	}
+	~sparse_table(){
+		free(st);
+		free(log_id);
+	}
 };
 
 #endif
