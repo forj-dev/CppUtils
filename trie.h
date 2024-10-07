@@ -1,3 +1,5 @@
+#ifndef _Trie_20241001_
+#define _Trie_20241001_
 #include<bits/stdc++.h>
 
 class trie{
@@ -42,4 +44,6 @@ public:
 		for(auto& p:next)delete p.second;
 	}
 };
+
+#endif
 
